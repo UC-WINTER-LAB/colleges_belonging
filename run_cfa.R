@@ -1,10 +1,11 @@
 #~ Group Inclusion (Sheldon & Bettencourt, 2002)
-belonging.model <- '
-             belongingOtg =~ belongingotago1 + belongingotago2 + belongingotago3 + belonginghall1 + belonginghall2 + belonginghall3
+belonging.otago.model <- '
+             belongingOtg =~ belongingotago1 + belongingotago2 + belongingotago3
             '
+# These are the variables for the halls:  + belonginghall1 + belonginghall2 + belonginghall3
 
-belonging_fit <- sem(belonging.model, data = new_df)
-summary(belonging_fit, fit.measures = TRUE) 
+belonging_otago_fit <- sem(belonging.otago.model, data = new_df)
+summary(belonging_otago_fit, fit.measures = TRUE) 
 
 
 
