@@ -18,7 +18,7 @@ belonging_otago_df <- bind_cols(
 
 #~ Group Inclusion - Hall
 belonging.hall.model <- '
-             belongingOtg =~ belonginghall1 + belonginghall2 + belonginghall3
+             belongingHall =~ belonginghall1 + belonginghall2 + belonginghall3
             '
 belonging_hall_fit <- sem(belonging.hall.model, cluster="id", data = new_df)
 summary(belonging_hall_fit, fit.measures = TRUE) 
@@ -51,18 +51,21 @@ warw_edin_df <- bind_cols(
 exits.model <- '
             exits =~ exits1 + exits2 + exits3 + exits4 + exits6 + exits7 + exits8 + exits9 + exits10
                        '
-exits_fit <- sem(exits.model, data = new_df)
+exits_fit <- sem(exits.model, cluster = "id", data = new_df)
 summary(exits_fit, fit.measures = TRUE)
 
 exits_df <- bind_cols(
   new_df %>%
-    select(id, contains("exits")) %>%
+    select(id, time, exits1, exits2, exits3, exits4, exits6, exits7, exits8, exits9, exits10) %>%
     na.omit() %>%
     select(-contains("exits")),
   predict(exits_fit)
 )
 
 
-new_df %>%
+new_df_latent_vars <- new_df %>%
   select(id, time) %>%
-  left_join(belonging_otago_df, belonging_hall_df, warw_edin_df, exits_df, by=c("id", "time"))
+  left_join(belonging_otago_df, by=c("id", "time")) %>%
+  left_join(belonging_hall_df, by=c("id", "time")) %>%
+  left_join(warw_edin_df, by=c("id", "time")) %>%
+  left_join(exits_df, by=c("id", "time"))
