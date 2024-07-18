@@ -67,15 +67,3 @@ exits_df <- bind_cols(
 new_df %>%
   select(id, time) %>%
   left_join(belonging_otago_df, belonging_hall_df, warw_edin_df, exits_df, by=c("id", "time"))
-
-
-### Example to get the data
-#~ idk if i was supposed to have the variable(?) names down here be the same as the ones used in the xxx =~ xxx1 + xxx2 etc.
-data.frame(
-  belongingOtg = predict(belonging_otago_fit),
-  centralityOtg = predict(centrality_fit),
-  mhcsf = predict(mental_health_cont_fit),
-  wmws = predict(warw_edin_fit),
-  phq = predict(patient_health_fit),
-  exits = predict(exits_fit)
-)
