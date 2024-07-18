@@ -52,7 +52,7 @@ exits.model <- '
             exits =~ exits1 + exits2 + exits3 + exits4 + exits5 + exits6 + exits7 + exits8 + exits9 + exits10 + exits11 + exits12 + exits13
            
                        '
-exits_fit <- sem(exits.model, cluster="id", cluster="id", data = new_df)
+exits_fit <- sem(exits.model, data = new_df)
 summary(exits_fit, fit.measures = TRUE)
 
 exits_df <- bind_cols(
