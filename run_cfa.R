@@ -49,15 +49,14 @@ warw_edin_df <- bind_cols(
 
 #Exeter Identity Transition Scale (EXITS)
 exits.model <- '
-            exits =~ exits1 + exits2 + exits3 + exits4 + exits5 + exits6 + exits7 + exits8 + exits9 + exits10 + exits11 + exits12 + exits13
-           
+            exits =~ exits1 + exits2 + exits3 + exits4 + exits6 + exits7 + exits8 + exits9 + exits10
                        '
 exits_fit <- sem(exits.model, data = new_df)
 summary(exits_fit, fit.measures = TRUE)
 
 exits_df <- bind_cols(
   new_df %>%
-    select(id, time, contains("exits")) %>%
+    select(id, contains("exits")) %>%
     na.omit() %>%
     select(-contains("exits")),
   predict(exits_fit)
