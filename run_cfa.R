@@ -36,7 +36,7 @@ belonging_hall_df <- bind_cols(
 warw_edin.model <- '
             wmws =~ wmws1 + wmws2 + wmws3 + wmws4 + wmws5 + wmws6 + wmws7 + wmws8 + wmws9 + wmws10 + wmws11 + wmws12 + wmws13 + wmws14
                         '
-warw_edin_fit <- sem(warw_edin.model, data = new_df)
+warw_edin_fit <- sem(warw_edin.model, cluster="id", data = new_df)
 summary(warw_edin_fit, fit.measures = TRUE)
 
 warw_edin_df <- bind_cols(
@@ -52,7 +52,7 @@ exits.model <- '
             exits =~ exits1 + exits2 + exits3 + exits4 + exits5 + exits6 + exits7 + exits8 + exits9 + exits10 + exits11 + exits12 + exits13
            
                        '
-exits_fit <- sem(exits.model, cluster="id", data = new_df)
+exits_fit <- sem(exits.model, cluster="id", cluster="id", data = new_df)
 summary(exits_fit, fit.measures = TRUE)
 
 exits_df <- bind_cols(
@@ -64,17 +64,18 @@ exits_df <- bind_cols(
 )
 
 
-### Example to get the data
-#~ idk if i was supposed to have the variable(?) names down here be the same as the ones used in the xxx =~ xxx1 + xxx2 etc.
 new_df %>%
   select(id, time) %>%
-  left_join(belonging_otago_df, by=c("id", "time"))
+  left_join(belonging_otago_df, belonging_hall_df, warw_edin_df, exits_df, by=c("id", "time"))
 
+
+### Example to get the data
+#~ idk if i was supposed to have the variable(?) names down here be the same as the ones used in the xxx =~ xxx1 + xxx2 etc.
 data.frame(
   belongingOtg = predict(belonging_otago_fit),
   centralityOtg = predict(centrality_fit),
   mhcsf = predict(mental_health_cont_fit),
   wmws = predict(warw_edin_fit),
   phq = predict(patient_health_fit),
-  exits = predict(ident_trans_fit)
+  exits = predict(exits_fit)
 )
