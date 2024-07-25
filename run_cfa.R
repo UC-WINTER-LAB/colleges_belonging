@@ -69,3 +69,21 @@ new_df_latent_vars <- new_df %>%
   left_join(belonging_hall_df, by=c("id", "time")) %>%
   left_join(warw_edin_df, by=c("id", "time")) %>%
   left_join(exits_df, by=c("id", "time"))
+
+#### Correlation Matrix
+
+library(Hmisc)
+
+df_Cor <- new_df_latent_vars %>% #selecting our variables of interest
+  select(contains("belongingotago"), contains("belonginghall"), contains("wmws"), contains("exits"))
+
+rcorr(as.matrix(df_Cor)) #generating the matrix
+
+#### Regression
+
+
+belongingOtago_regression <- lm(belongingOtg ~ wmws, data = new_df_latent_vars)
+summary(belongingOtago_regression)
+
+belongingHalls_regression <- lm(belongingHall ~ wmws, data = new_df_latent_vars)
+summary(belongingHalls_regression)
