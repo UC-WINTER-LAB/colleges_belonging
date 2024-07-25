@@ -64,28 +64,8 @@ exits_df <- bind_cols(
 
 
 new_df_latent_vars <- new_df %>%
-  select(id, time) %>%
+  select(id, gender, time) %>%
   left_join(belonging_otago_df, by=c("id", "time")) %>%
   left_join(belonging_hall_df, by=c("id", "time")) %>%
   left_join(warw_edin_df, by=c("id", "time")) %>%
   left_join(exits_df, by=c("id", "time"))
-
-#### Correlation Matrix
-
-library(Hmisc)
-
-df_Cor <- new_df_latent_vars %>%
-  select(contains("belongingOtg"), contains("belonginghall"), contains("wmws"), contains("exits"))
-
-rcorr(as.matrix(df_Cor))
-
-#### Regression
-
-
-belongingOtago_regression <- lm(belongingOtg ~ wmws, data = new_df_latent_vars)
-summary(belongingOtago_regression)
-
-belongingHalls_regression <- lm(belongingHall ~ wmws, data = new_df_latent_vars)
-summary(belongingHalls_regression)
-
-
