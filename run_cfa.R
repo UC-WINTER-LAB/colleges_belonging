@@ -74,10 +74,10 @@ new_df_latent_vars <- new_df %>%
 
 library(Hmisc)
 
-df_Cor <- new_df_latent_vars %>% #selecting our variables of interest
-  select(contains("belongingotago"), contains("belonginghall"), contains("wmws"), contains("exits"))
+df_Cor <- new_df_latent_vars %>%
+  select(contains("belongingOtg"), contains("belonginghall"), contains("wmws"), contains("exits"))
 
-rcorr(as.matrix(df_Cor)) #generating the matrix
+rcorr(as.matrix(df_Cor))
 
 #### Regression
 
@@ -87,3 +87,5 @@ summary(belongingOtago_regression)
 
 belongingHalls_regression <- lm(belongingHall ~ wmws, data = new_df_latent_vars)
 summary(belongingHalls_regression)
+
+
