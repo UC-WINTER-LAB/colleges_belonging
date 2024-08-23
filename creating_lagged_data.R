@@ -1,8 +1,10 @@
+# Creating lagged regressor, i.e., exits at t-1
 dat_lag <- new_df_latent_vars %>%
   group_by(id) %>%
   mutate(exits_lag = lead(exits, n=1)) %>% 
   ungroup()
 
+# This is broken, its calculating ids of people with more than one survey response
 ids <- na.omit(dat_lag) %>%
   group_by(id) %>%
   summarise(cnt = n()) %>%
@@ -10,8 +12,10 @@ ids <- na.omit(dat_lag) %>%
   select(id) %>%
   as.vector()
 
+# Creating an imputed dataset for testing
 test <- mice::complete(mice::mice(dat_lag))
 
+# We are trying to control for baseline exits to see how exits5/8 explain a _change_ in exits
 test_lm <- lmer(exits ~ exits_lag + exits5 * exits8 + gender + (1|id), data=filter(dat_lag, id %in% ids))
 test_lm <- lmer(exits ~ exits_lag + exits5 * exits8 + gender + (1|id), data=test)
   
