@@ -64,7 +64,7 @@ exits_df <- bind_cols(
 
 
 new_df_latent_vars <- new_df %>%
-  select(id, gender, time) %>%
+  select(id, gender, time, exits5, exits8) %>%
   left_join(belonging_otago_df, by=c("id", "time")) %>%
   left_join(belonging_hall_df, by=c("id", "time")) %>%
   left_join(warw_edin_df, by=c("id", "time")) %>%
