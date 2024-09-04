@@ -1,3 +1,6 @@
+library(lme4)
+library(lmerTest)
+
 # Creating lagged regressor, i.e., exits at t-1
 dat_lag <- new_df_latent_vars %>%
   group_by(id) %>%
@@ -13,20 +16,19 @@ ids <- na.omit(dat_lag) %>%
   as.vector()
 
 # Creating an imputed dataset for testing
-test <- mice::complete(mice::mice(dat_lag))
+test <- mice::complete(mice::mice(dat_lag)) %>%
+  mutate(exits5 = ifelse(time == "s1", NA, exits5),
+         exits8 = ifelse(time == "s1", NA, exits8)
+         )
 
 # We are trying to control for baseline exits to see how exits5/8 explain a _change_ in exits
-test_lm <- lmer(exits ~ exits_lag + exits5 * exits8 + gender + (1|id), data=filter(dat_lag, id %in% ids))
 test_lm <- lmer(exits ~ exits_lag + exits5 * exits8 + gender + (1|id), data=test)
-  
-test_lm <- lm(exits ~ exits_lag + exits5 * exits8 + gender, data=dat_lag)
-
 summary(test_lm)
 
-ggplot(dat_lag, aes(x=time, y=exits)) +
+ggplot(test, aes(x=time, y=exits)) +
   geom_boxplot()
 
-dat_lag %>%
+test %>%
   filter(exits < exits_lag) %>%
   group_by(time) %>%
   summarise(exits5 = mean(exits5, na.rm=TRUE),

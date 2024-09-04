@@ -18,7 +18,7 @@ summary(belongingOtago_regression)
 belongingHalls_regression <- lmer(wmws ~ belongingHall + exits + gender + (1 | id), data = new_df_latent_vars)
 summary(belongingHalls_regression)
 
-######## Taylor playing around with models.
+######## Taylor playing around with models - wmws
 
 belongingHalls_regression <- lmer(wmws ~ exits * time + gender + (1 | id), data = new_df_latent_vars)
 summary(belongingHalls_regression)
@@ -28,3 +28,12 @@ summary(exits_over_time)
 
 exits_over_time <- lmer(exits ~ exits5 + exits8 + gender + (1 | id), data = new_df_latent_vars)
 summary(exits_over_time)
+
+######## Taylor playing around with models - loneliness
+
+belongingHalls_regression <- lmer(loneliness ~ exits * time + gender + (1 | id), data = new_df_latent_vars)
+summary(belongingHalls_regression)
+
+exits_over_time <- lmer(loneliness ~ time + gender + (1 | id), data = new_df_latent_vars)
+summary(exits_over_time)
+

@@ -64,7 +64,7 @@ exits_df <- bind_cols(
 
 #UCLA Loneliness Scale 
 loneliness.model <- '
-             loneliness=~ ucla1 + ucla2 + ucla3 + ucla4 + ucla5 + ucla6 + ucla7 + ucla8 + ucla9 + ucla10 + ucla11 + ucla12 + ucla13 + ucla14 + ucla15 + ucla16 + ucla17 + ucla18 + ucla19 + ucla20
+             loneliness=~ ucla2 + ucla1 + ucla3 + ucla4 + ucla5 + ucla6 + ucla7 + ucla8 + ucla9 + ucla10 + ucla11 + ucla12 + ucla13 + ucla14 + ucla15 + ucla16 + ucla17 + ucla18 + ucla19 + ucla20
                        '
 loneliness_fit <- sem(loneliness.model, cluster = "id", data = new_df)
 summary(loneliness_fit, fit.measures = TRUE)
