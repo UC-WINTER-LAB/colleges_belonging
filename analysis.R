@@ -7,7 +7,7 @@ library(lmerTest)
 df_Cor <- new_df_latent_vars %>%
   select(contains("belongingOtg"), contains("belonginghall"), contains("wmws"), contains("exits"))
 
-rcorr(as.matrix(df_Cor))$P
+rcorr(as.matrix(df_Cor))
 
 #### Regression
 

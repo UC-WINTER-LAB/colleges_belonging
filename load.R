@@ -40,7 +40,9 @@ new_df <- raw_df_long %>%
          contains("wmws"),
          belongingotago1,belongingotago2,belongingotago3,
          belonginghall1,belonginghall2,belonginghall3,
-         contains("exits")
+         contains("exits"),
+         contains("ucla")## loneliness
          ) %>%
-  filter(!is.na(time))
+  filter(!is.na(time)
+         )
 
