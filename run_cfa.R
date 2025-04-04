@@ -62,6 +62,24 @@ exits_df <- bind_cols(
   predict(exits_fit)
 )
 
+#Exits future change subscales, new groups and old groups
+exits_cng.model <- '
+            exits_same =~ exits5 + exits6 + exits7
+            exits_new =~ exits8 + exits9 + exits10
+            exits_person =~ exits11 + exits12 + 1*exits13
+                       '
+exits_cng_fit <- sem(exits_cng.model, cluster = "id", data = new_df)
+summary(exits_fit, fit.measures = TRUE)
+
+exits_cng_df <- bind_cols(
+  new_df %>%
+    select(id, time, exits5, exits6, exits7, exits8, exits9, exits10, exits11, exits12, exits13) %>%
+    na.omit() %>%
+    select(-contains("exits")),
+  predict(exits_cng_fit)
+)
+
+
 #UCLA Loneliness Scale 
 loneliness.model <- '
              loneliness=~ ucla2 + ucla1 + ucla3 + ucla4 + ucla5 + ucla6 + ucla7 + ucla8 + ucla9 + ucla10 + ucla11 + ucla12 + ucla13 + ucla14 + ucla15 + ucla16 + ucla17 + ucla18 + ucla19 + ucla20
@@ -78,9 +96,10 @@ loneliness_df <- bind_cols(
 )
 
 new_df_latent_vars <- new_df %>%
-  select(id, gender, time, exits5, exits8) %>%
+  select(id, gender, time, exits5, exits8, exits10) %>%
   left_join(belonging_otago_df, by=c("id", "time")) %>%
   left_join(belonging_hall_df, by=c("id", "time")) %>%
   left_join(warw_edin_df, by=c("id", "time")) %>%
   left_join(exits_df, by=c("id", "time"))%>%
+  left_join(exits_cng_df, by=c("id", "time"))%>%
   left_join(loneliness_df, by=c("id", "time"))

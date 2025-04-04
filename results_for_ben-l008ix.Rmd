@@ -1,0 +1,78 @@
+---
+title: "results_for_ben"
+author: "Taylor Winter"
+date: "2024-11-24"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(Hmisc)
+library(lme4)
+library(lmerTest)
+library(lavaan)
+
+#source("load.R")
+new_df <- readRDS("new_df.RDS")
+source("run_cfa.R")
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Exits predicts wellbeing / loneliness
+
+```{r exits_main}
+lmer(wmws ~ exits + gender + (1 | id), data = new_df_latent_vars) %>%
+  summary()
+lmer(loneliness ~ exits + gender + (1 | id), data = new_df_latent_vars) %>%
+  summary()
+```
+
+# Exits is moderated by time
+
+```{r exits_mod_time}
+lmer(wmws ~ exits * time + gender + (1 | id), data = new_df_latent_vars) %>%
+  summary()
+lmer(loneliness ~ exits * time + gender + (1 | id), data = new_df_latent_vars) %>%
+  summary()
+```
+
+# Exits is moderated by sex
+
+```{r exits_mod_sex}
+lmer(wmws ~ exits * gender + (1 | id), data = new_df_latent_vars) %>%
+  summary()
+lmer(loneliness ~ exits * gender + (1 | id), data = new_df_latent_vars) %>%
+  summary()
+```
+
+# Does exits5 and exits8 predict wellbeing when controlling for exits
+
+```{r exits_5_8_reg}
+lmer(wmws ~ exits5 + exits8 + exits + gender + (1 | id), data = new_df_latent_vars) %>%
+  summary()
+lmer(loneliness ~ exits5 + exits8 + exits + gender + (1 | id), data = new_df_latent_vars) %>%
+  summary()
+```
+
+# Look at exits5 and exits8 descriptively
+
+```{r exits_5_8_desc}
+new_df_latent_vars %>%
+  select(time, exits5, exits8) %>%
+  pivot_longer(cols = c(exits5, exits8), names_to = "var", values_to = "val") %>%
+  mutate(val = mean(val, na.rm=TRUE), .by = c("time", "var")) %>%
+  ggplot(aes(x=time, y=val)) +
+  geom_point() +
+  geom_line() +
+  theme_classic() +
+  facet_wrap(~var, scale="free")
+
+new_df_latent_vars %>%
+  select(time, exits5, exits8) %>%
+  pivot_longer(cols = c(exits5, exits8), names_to = "var", values_to = "val") %>%
+  ggplot(aes(x=time, y=val)) +
+  geom_violin() +
+  theme_classic() +
+  facet_wrap(~var, scale="free")
+
+```
