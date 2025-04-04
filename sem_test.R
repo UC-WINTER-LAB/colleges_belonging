@@ -6,7 +6,13 @@ sem_data <- new_df_latent_vars %>%
   left_join(
     new_df_latent_vars %>%
       filter(time == "s2") %>%
-      select(id, exits5, exits8),
+      select(id, continuity, gain),
+    by="id"
+  ) %>%
+  left_join(
+    new_df_latent_vars %>%
+      filter(time == "s2") %>%
+      select(id, wmws_old = wmws),
     by="id"
   ) %>%
   left_join(
@@ -18,9 +24,9 @@ sem_data <- new_df_latent_vars %>%
 
 test_sem <- sem(
   "
-  wmws ~ b1*exits5 + b2*exits8 + c*exits
-  exits5 ~ a1*exits
-  exits8 ~ a2*exits
+  wmws ~ b1*continuity + b2*gain + c*exits + gender + wmws_old
+  continuity ~ a1*exits + gender
+  gain ~ a2*exits + gender
   
   m1 := a1*b1
   m2 := a2*b2

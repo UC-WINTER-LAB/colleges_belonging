@@ -62,23 +62,35 @@ exits_df <- bind_cols(
   predict(exits_fit)
 )
 
-#Exits future change subscales, new groups and old groups
-exits_cng.model <- '
-            exits_same =~ exits5 + exits6 + exits7
-            exits_new =~ exits8 + exits9 + exits10
-            exits_person =~ exits11 + exits12 + 1*exits13
+#Exeter Identity Transition Scale (EXITS) - Continuity
+exits_cont.model <- '
+            continuity =~ exits5 + exits6 + exits7
                        '
-exits_cng_fit <- sem(exits_cng.model, cluster = "id", data = new_df)
-summary(exits_fit, fit.measures = TRUE)
+exits_cont_fit <- sem(exits_cont.model, cluster = "id", data = new_df)
+summary(exits_cont_fit, fit.measures = TRUE)
 
-exits_cng_df <- bind_cols(
+exits_cont_df <- bind_cols(
   new_df %>%
-    select(id, time, exits5, exits6, exits7, exits8, exits9, exits10, exits11, exits12, exits13) %>%
+    select(id, time, exits5, exits6, exits7) %>%
     na.omit() %>%
     select(-contains("exits")),
-  predict(exits_cng_fit)
+  predict(exits_cont_fit)
 )
 
+#Exeter Identity Transition Scale (EXITS) - Gain
+exits_gain.model <- '
+            gain =~ exits8 + exits9 + exits10
+                       '
+exits_gain_fit <- sem(exits_gain.model, cluster = "id", data = new_df)
+summary(exits_gain_fit, fit.measures = TRUE)
+
+exits_gain_df <- bind_cols(
+  new_df %>%
+    select(id, time, exits8, exits9, exits10) %>%
+    na.omit() %>%
+    select(-contains("exits")),
+  predict(exits_gain_fit)
+)
 
 #UCLA Loneliness Scale 
 loneliness.model <- '
@@ -100,6 +112,12 @@ new_df_latent_vars <- new_df %>%
   left_join(belonging_otago_df, by=c("id", "time")) %>%
   left_join(belonging_hall_df, by=c("id", "time")) %>%
   left_join(warw_edin_df, by=c("id", "time")) %>%
+<<<<<<< HEAD
   left_join(exits_df, by=c("id", "time"))%>%
   left_join(exits_cng_df, by=c("id", "time"))%>%
+=======
+  left_join(exits_df, by=c("id", "time")) %>%
+  left_join(exits_cont_df, by=c("id", "time")) %>%
+  left_join(exits_gain_df, by=c("id", "time")) %>%
+>>>>>>> 8d5669cb2d7fb0dd493fd3e205860bf92cf2092d
   left_join(loneliness_df, by=c("id", "time"))
