@@ -112,12 +112,7 @@ new_df_latent_vars <- new_df %>%
   left_join(belonging_otago_df, by=c("id", "time")) %>%
   left_join(belonging_hall_df, by=c("id", "time")) %>%
   left_join(warw_edin_df, by=c("id", "time")) %>%
-<<<<<<< HEAD
-  left_join(exits_df, by=c("id", "time"))%>%
-  left_join(exits_cng_df, by=c("id", "time"))%>%
-=======
   left_join(exits_df, by=c("id", "time")) %>%
   left_join(exits_cont_df, by=c("id", "time")) %>%
   left_join(exits_gain_df, by=c("id", "time")) %>%
->>>>>>> 8d5669cb2d7fb0dd493fd3e205860bf92cf2092d
   left_join(loneliness_df, by=c("id", "time"))
