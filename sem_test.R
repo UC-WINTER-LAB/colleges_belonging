@@ -31,7 +31,7 @@ test_sem <- sem(
   m1 := a1*b1
   m2 := a2*b2
   
-  total := a1+b1+a2+b2+c
+  total := (a1*b1) + (a2*b2) + c
   
   m1_prop := m1/total
   m2_prop := m2/total
@@ -40,4 +40,3 @@ test_sem <- sem(
 )
 
 summary(test_sem)  
-  
