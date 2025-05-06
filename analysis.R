@@ -12,66 +12,44 @@ rcorr(as.matrix(df_Cor))
 #### Regression
 
 
-belongingOtago_regression <- lmer(wmws ~ belongingOtg + exits + gender + (1 | id), data = new_df_latent_vars)
-summary(belongingOtago_regression)
+#### SEM
+sem_data <- new_df_latent_vars %>%
+  filter(time == "s1") %>%
+  select(id, gender, exits) %>%
+  left_join(
+    new_df_latent_vars %>%
+      filter(time == "s2") %>%
+      select(id, continuity, gain),
+    by="id"
+  ) %>%
+  left_join(
+    new_df_latent_vars %>%
+      filter(time == "s2") %>%
+      select(id, wmws_old = wmws),
+    by="id"
+  ) %>%
+  left_join(
+    new_df_latent_vars %>%
+      filter(time == "s3") %>%
+      select(id, wmws),
+    by="id"
+  )
 
-belongingHalls_regression <- lmer(wmws ~ belongingHall + exits + gender + (1 | id), data = new_df_latent_vars)
-summary(belongingHalls_regression)
+test_sem <- sem(
+  "
+  wmws ~ b1*continuity + b2*gain + c*exits + gender + wmws_old
+  continuity ~ a1*exits + gender
+  gain ~ a2*exits + gender
+  
+  m1 := a1*b1
+  m2 := a2*b2
+  
+  total := (a1*b1) + (a2*b2) + c
+  
+  m1_prop := m1/total
+  m2_prop := m2/total
+  ",
+  data=sem_data
+)
 
-######## Taylor playing around with models - wmws
-
-belongingHalls_regression <- lmer(wmws ~ exits * time + gender + (1 | id), data = new_df_latent_vars)
-summary(belongingHalls_regression)
-
-exits_over_time <- lmer(exits ~ time + gender + (1 | id), data = new_df_latent_vars)
-summary(exits_over_time)
-
-exits_over_time <- lmer(exits ~ exits5 + exits8 + gender + (1 | id), data = new_df_latent_vars)
-summary(exits_over_time)
-
-######## Taylor playing around with models - loneliness
-
-belongingHalls_regression <- lmer(loneliness ~ exits * time + gender + (1 | id), data = new_df_latent_vars)
-summary(belongingHalls_regression)
-
-exits_over_time <- lmer(loneliness ~ time + gender + (1 | id), data = new_df_latent_vars)
-summary(exits_over_time)
-
-#####################################################
-
-# Exits predicts wellbeing / loneliness
-lmer(wmws ~ exits + gender + (1 | id), data = new_df_latent_vars) %>%
-  summary()
-lmer(loneliness ~ exits + gender + (1 | id), data = new_df_latent_vars) %>%
-  summary()
-
-# Exits is moderated by time
-lmer(wmws ~ exits * time + gender + (1 | id), data = new_df_latent_vars) %>%
-  summary()
-lmer(loneliness ~ exits * time + gender + (1 | id), data = new_df_latent_vars) %>%
-  summary()
-
-# Exits is moderated by sex
-
-lmer(wmws ~ exits * gender + (1 | id), data = new_df_latent_vars) %>%
-  summary()
-lmer(loneliness ~ exits * gender + (1 | id), data = new_df_latent_vars) %>%
-  summary()
-
-# Does exits5 and exits8 predict wellbeing when controlling for exits
-lmer(wmws ~ exits5 + exits8 + exits + gender + (1 | id), data = new_df_latent_vars) %>%
-  summary()
-lmer(loneliness ~ exits5 + exits8 + exits + gender + (1 | id), data = new_df_latent_vars) %>%
-  summary()
-
-# Look at exits5 and exits8 descriptively
-new_df_latent_vars %>%
-  select(time, exits5, exits8) %>%
-  pivot_longer(cols = c(exits5, exits8), names_to = "var", values_to = "val") %>%
-  ggplot(aes(x=time, y=val, group=var, color=var)) +
-  geom_point() +
-  geom_line() +
-  theme_classic()
-
-
-
+summary(test_sem)  
