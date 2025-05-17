@@ -2,11 +2,9 @@ library(tidyverse)
 library(rdrop2)
 library(lavaan)
 
-if(rdrop2::drop_acc()$error_summary == "expired_access_token/") {
-  drop_auth(new_user = TRUE)
-}
+drop_auth(new_user = TRUE)
   
-raw_df <- drop_read_csv("Winter Data/Longitudinal Colleges Data - Otago/Belonging_Dataset_Deidentified.csv") %>%
+raw_df <- drop_read_csv("Longitudinal Colleges Data - Otago/Belonging_Dataset_Deidentified.csv") %>%
   as_tibble() %>%
   rename_all(tolower)
 
