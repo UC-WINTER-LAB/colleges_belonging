@@ -1,3 +1,13 @@
+#descriptives/demographics
+library(sjmisc)
+
+frq(new_df$exits1)
+frq(new_df$gender)
+
+new_df %>%
+  summarise(MeanAge = mean(age, na.rm = TRUE))
+
+
 #~ Group Inclusion - Otago
 belonging.otago.model <- '
              belongingOtg =~ belongingotago1 + belongingotago2 + belongingotago3
