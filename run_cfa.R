@@ -1,3 +1,29 @@
+#descriptives/demographics
+library(sjmisc)
+
+demographics_des_df <- new_df %>%
+                  select(
+                    id,
+                    time,
+                    age,
+                    gender,
+                    contains("exits")
+                    ) %>%
+                  filter(!is.na(exits1), #removes missingness for participant count
+                  time=="s1") #removes id double ups for the means
+
+frq(new_df$exits1)
+frq(demographics_des_df$exits1)
+
+frq(new_df$gender)
+frq(demographics_des_df$gender)
+
+new_df %>%
+  summarise(MeanAge = mean(age, na.rm = TRUE))
+demographics_des_df %>%
+  summarise(MeanAge = mean(age, na.rm = TRUE))
+
+
 #~ Group Inclusion - Otago
 belonging.otago.model <- '
              belongingOtg =~ belongingotago1 + belongingotago2 + belongingotago3
