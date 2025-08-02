@@ -9,10 +9,8 @@ df_Cor <- new_df_latent_vars %>%
 
 rcorr(as.matrix(df_Cor))
 
-#### Regression
+######## Get longitudinal SEM data #######################################
 
-
-#### SEM
 sem_data <- new_df_latent_vars %>%
   filter(time == "s1") %>%
   select(id, gender, exits) %>%
@@ -35,9 +33,17 @@ sem_data <- new_df_latent_vars %>%
     by="id"
   )
 
+#### Regression #######################################
+
+summary(lm(wmws ~ exits + gender, data = sem_data))
+
+wellbeing ~ exits + gender
+
+#### SEM ##############################################
+
 test_sem <- sem(
   "
-  wmws ~ b1*continuity + b2*gain + c*exits + gender + wmws_old
+  wmws ~ b1*continuity + b2*gain + c*exits + gender
   continuity ~ a1*exits + gender
   gain ~ a2*exits + gender
   
