@@ -35,13 +35,11 @@ sem_data <- new_df_latent_vars %>%
 
 #### Regression #######################################
 
-summary(lm(wmws ~ exits + gender, data = sem_data))
-
-wellbeing ~ exits + gender
+jtools::summ(lm(wmws ~ exits + gender, data = sem_data))
 
 #### SEM ##############################################
 
-test_sem <- sem(
+simic_sem <- sem(
   "
   wmws ~ b1*continuity + b2*gain + c*exits + gender
   continuity ~ a1*exits + gender
@@ -58,4 +56,14 @@ test_sem <- sem(
   data=sem_data
 )
 
-summary(test_sem)  
+# Note summary(simic_sem)$pe
+summary(simic_sem)  
+
+lavaanPlot(
+  model = simic_sem,
+  coefs = TRUE,
+  stand = TRUE,
+  graph_options = list(rankdir = "LR"),
+  stars = "covs",
+  sig = 0.05
+)
