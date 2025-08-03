@@ -4,11 +4,6 @@ library(Hmisc)
 library(lme4)
 library(lmerTest)
 
-df_Cor <- new_df_latent_vars %>%
-  select(contains("belongingOtg"), contains("belonginghall"), contains("wmws"), contains("exits"))
-
-rcorr(as.matrix(df_Cor))
-
 ######## Get longitudinal SEM data #######################################
 
 sem_data <- new_df_latent_vars %>%
@@ -33,9 +28,17 @@ sem_data <- new_df_latent_vars %>%
     by="id"
   )
 
+##### Correlation matrix ##############################
+
+sem_data %>%
+  select(-wmws_old, -id, -gender) %>%
+  as.matrix() %>%
+  rcorr()
+
 #### Regression #######################################
 
 jtools::summ(lm(wmws ~ exits + gender, data = sem_data))
+jtools::summ(lm(wmws ~ exits + continuity + gain + gender, data = sem_data))
 
 #### SEM ##############################################
 
