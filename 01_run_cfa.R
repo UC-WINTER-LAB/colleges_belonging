@@ -116,3 +116,13 @@ new_df_latent_vars <- new_df %>%
   left_join(exits_cont_df, by=c("id", "time")) %>%
   left_join(exits_gain_df, by=c("id", "time")) %>%
   left_join(loneliness_df, by=c("id", "time"))
+
+# calculate cronbach's alpha
+
+library(ltm)
+
+warw_edin_alpha <- new_df %>%
+  dplyr::select(contains("wmws")) %>%
+  na.omit()
+
+cronbach.alpha(warw_edin_alpha, CI=TRUE, standardized=TRUE) #idk if either of these have to be false tbh - lauren

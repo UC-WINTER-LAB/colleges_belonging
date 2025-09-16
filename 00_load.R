@@ -47,4 +47,3 @@ new_df <- raw_df_long %>%
          ) %>%
   filter(!is.na(time)
          )
-
