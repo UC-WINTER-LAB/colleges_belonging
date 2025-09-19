@@ -8,30 +8,30 @@ library(lmerTest)
 
 sem_data <- new_df_latent_vars %>%
   filter(time == "s1") %>%
-  select(id, gender, exits) %>%
+  dplyr::select(id, gender, exits) %>%
   left_join(
     new_df_latent_vars %>%
       filter(time == "s2") %>%
-      select(id, continuity, gain),
+      dplyr::select(id, continuity, gain),
     by="id"
   ) %>%
   left_join(
     new_df_latent_vars %>%
       filter(time == "s2") %>%
-      select(id, wmws_old = wmws),
+      dplyr::select(id, wmws_old = wmws),
     by="id"
   ) %>%
   left_join(
     new_df_latent_vars %>%
       filter(time == "s3") %>%
-      select(id, wmws),
+      dplyr::select(id, wmws),
     by="id"
   )
 
 ##### Correlation matrix ##############################
 
 sem_data %>%
-  select(-wmws_old, -id, -gender) %>%
+  dplyr::select(-wmws_old, -id, -gender) %>%
   as.matrix() %>%
   rcorr()
 
