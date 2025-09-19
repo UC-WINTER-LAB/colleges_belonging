@@ -121,8 +121,48 @@ new_df_latent_vars <- new_df %>%
 
 library(ltm)
 
-warw_edin_alpha <- new_df %>%
-  dplyr::select(contains("wmws")) %>%
+#Warwick Edinburgh Mental Wellbeing Scale
+wemws_proto_alpha <- new_df %>%
+  dplyr::select(contains("wmws"), time) %>% #the "dplyr::" is there bc there is another package that has a select function and this serves to specify
+  filter(time == "s3") %>% #filter out relevant timepoint so that there aren't mutliple responses from one participant
   na.omit()
 
-cronbach.alpha(warw_edin_alpha, CI=TRUE, standardized=TRUE) #idk if either of these have to be false tbh - lauren
+wemws_alpha <- wemws_proto_alpha %>% #this is to get the responses we want but without the time variable so the cronbach.alpha doesn't get confused
+  dplyr::select(contains("wmws"))
+
+cronbach.alpha(warw_edin_alpha, CI=TRUE, standardized=FALSE) #idk if either of these have to be false tbh - lauren
+
+#EXITS
+
+###Total
+exits_total_proto <- new_df %>%
+  dplyr::select(exits1, exits2, exits3, exits4, time) %>%
+  filter(time == "s1") %>%
+  na.omit()
+
+exits_total_alpha <- exits_total_proto %>%
+  dplyr::select(exits1, exits2, exits3, exits4)
+
+cronbach.alpha(exits_total_alpha, CI=TRUE, standardized=FALSE)
+
+###Continuity
+exits_cont_proto <- new_df %>%
+  dplyr::select(exits5, exits6, exits7, time) %>%
+  filter(time == "s3") %>%
+  na.omit()
+
+exits_cont_alpha <- exits_cont_proto %>%
+  dplyr::select(exits5, exits6, exits7)
+
+cronbach.alpha(exits_cont_alpha, CI=TRUE, standardized=FALSE)
+
+###Gain
+exits_gain_proto <- new_df %>%
+  dplyr::select(exits8, exits9, exits10, time) %>%
+  filter(time == "s3") %>%
+  na.omit()
+
+exits_gain_alpha <- exits_gain_proto %>%
+  dplyr::select(exits8, exits9, exits10)
+
+cronbach.alpha(exits_gain_alpha, CI=TRUE, standardized=FALSE)
