@@ -35,6 +35,12 @@ sem_data %>%
   as.matrix() %>%
   rcorr()
 
+sem_data %>%
+  select(-wmws_old, -id, -gender) %>%
+  apaTables::apa.cor.table()
+
+#### Counts ###########################################
+
 #### Regression #######################################
 
 jtools::summ(lm(wmws ~ exits + gender, data = sem_data))
