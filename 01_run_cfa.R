@@ -122,15 +122,39 @@ new_df_latent_vars <- new_df %>%
 library(ltm)
 
 #Warwick Edinburgh Mental Wellbeing Scale
-wemws_proto_alpha <- new_df %>%
+
+###s1
+wemws_proto_s1 <- new_df %>%
   dplyr::select(contains("wmws"), time) %>% #the "dplyr::" is there bc there is another package that has a select function and this serves to specify
-  filter(time == "s3") %>% #filter out relevant timepoint so that there aren't mutliple responses from one participant
+  filter(time == "s1") %>% #filter out relevant timepoint so that there aren't mutliple responses from one participant
   na.omit()
 
-wemws_alpha <- wemws_proto_alpha %>% #this is to get the responses we want but without the time variable so the cronbach.alpha doesn't get confused
+wemws_alpha <- wemws_proto_s1 %>% #this is to get the responses we want but without the time variable so the cronbach.alpha doesn't get confused
   dplyr::select(contains("wmws"))
 
-cronbach.alpha(warw_edin_alpha, CI=TRUE, standardized=FALSE) #idk if either of these have to be false tbh - lauren
+cronbach.alpha(wemws_alpha, CI=TRUE, standardized=FALSE) #idk if either of these have to be false tbh - lauren
+
+###s2
+wemws_proto_s2 <- new_df %>%
+  dplyr::select(contains("wmws"), time) %>% 
+  filter(time == "s2") %>%
+  na.omit()
+
+wemws_alpha <- wemws_proto_s2 %>%
+  dplyr::select(contains("wmws"))
+
+cronbach.alpha(wemws_alpha, CI=TRUE, standardized=FALSE)
+
+###s3
+wemws_proto_s3 <- new_df %>%
+  dplyr::select(contains("wmws"), time) %>% 
+  filter(time == "s2") %>%
+  na.omit()
+
+wemws_alpha <- wemws_proto_s3 %>%
+  dplyr::select(contains("wmws"))
+
+cronbach.alpha(wemws_alpha, CI=TRUE, standardized=FALSE)
 
 #EXITS
 
