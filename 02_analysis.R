@@ -3,12 +3,13 @@
 library(Hmisc)
 library(lme4)
 library(lmerTest)
+library(lavaanPlot)
 
 ######## Get longitudinal SEM data #######################################
 
 sem_data <- new_df_latent_vars %>%
   filter(time == "s1") %>%
-  select(id, gender, exits) %>%
+  select(id, gender, exits, wmws_t1 = wmws) %>%
   left_join(
     new_df_latent_vars %>%
       filter(time == "s2") %>%
@@ -18,33 +19,33 @@ sem_data <- new_df_latent_vars %>%
   left_join(
     new_df_latent_vars %>%
       filter(time == "s2") %>%
-      select(id, wmws_old = wmws),
+      select(id, wmws_t2 = wmws),
     by="id"
   ) %>%
   left_join(
     new_df_latent_vars %>%
       filter(time == "s3") %>%
-      select(id, wmws),
+      select(id, wmws_t3 = wmws),
     by="id"
   )
 
 ##### Correlation matrix ##############################
 
 sem_data %>%
-  select(-wmws_old, -id, -gender) %>%
+  select(-wmws_t2, -id, -gender) %>%
   as.matrix() %>%
   rcorr()
 
 #### Regression #######################################
 
-jtools::summ(lm(wmws ~ exits + gender, data = sem_data))
-jtools::summ(lm(wmws ~ exits + continuity + gain + gender, data = sem_data))
+jtools::summ(lm(wmws_t3 ~ exits + gender + wmws_t1, data = sem_data))
+jtools::summ(lm(wmws_t3 ~ exits + continuity + gain + gender + wmws_t1, data = sem_data))
 
 #### SEM ##############################################
 
 simic_sem <- sem(
   "
-  wmws ~ b1*continuity + b2*gain + c*exits + gender
+  wmws_t3 ~ b1*continuity + b2*gain + c*exits + gender + wmws_t1
   continuity ~ a1*exits + gender
   gain ~ a2*exits + gender
   
