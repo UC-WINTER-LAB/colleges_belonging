@@ -5,7 +5,7 @@ library(lavaan)
 if(rdrop2::drop_acc()$error_summary %in% c("expired_access_token/", "invalid_access_token/")) {
   drop_auth(new_user = TRUE)
 }
-  
+
 raw_df <- drop_read_csv("Longitudinal Colleges Data - Otago/Belonging_Dataset_Deidentified.csv") %>%
   as_tibble() %>%
   rename_all(tolower)
@@ -47,4 +47,3 @@ new_df <- raw_df_long %>%
          ) %>%
   filter(!is.na(time)
          )
-

@@ -13,7 +13,7 @@ sem_data <- new_df_latent_vars %>%
   left_join(
     new_df_latent_vars %>%
       filter(time == "s2") %>%
-      select(id, continuity, gain),
+      dplyr::select(id, continuity, gain),
     by="id"
   ) %>%
   left_join(
@@ -35,6 +35,17 @@ sem_data %>%
   select(-wmws_t2, -id, -gender) %>%
   as.matrix() %>%
   rcorr()
+
+sem_data %>%
+  select(-wmws_old, -id, -gender) %>%
+  apaTables::apa.cor.table()
+
+#### Counts ###########################################
+
+sem_data %>% 
+  filter(!is.na(exits)) %>%
+  summarise(cnt = n(), .by = "gender") %>%
+  mutate(pct = cnt / sum(cnt))
 
 #### Regression #######################################
 
