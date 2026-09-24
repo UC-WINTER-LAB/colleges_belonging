@@ -1,5 +1,6 @@
 #descriptives/demographics
 library(sjmisc)
+library(stringr)
 
 demographics_des_df <- new_df %>%
                   select(
@@ -7,6 +8,7 @@ demographics_des_df <- new_df %>%
                     time,
                     age,
                     gender,
+                    ethnicity,
                     contains("exits")
                     ) %>%
                   filter(!is.na(exits1), #removes missingness for participant count
@@ -17,6 +19,13 @@ frq(demographics_des_df$exits1)
 
 frq(new_df$gender)
 frq(demographics_des_df$gender)
+
+demographics_des_df%>%
+  mutate(ethnicity = str_replace_all(ethnicity, "indian", "asian"))%>%
+  mutate(ethnicity = str_replace_all(ethnicity, "nz-euro", "european"))%>%
+  mutate(ethnicity = str_replace_all(ethnicity, "middle-eastern-latin-american-african", "other"))%>%
+  mutate(ethnicity = str_replace_all(ethnicity, "pacific-islander", "other"))%>%
+  frq(ethnicity)
 
 new_df %>%
   summarise(MeanAge = mean(age, na.rm = TRUE))
