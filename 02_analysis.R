@@ -68,7 +68,8 @@ simic_sem <- sem(
   m1_prop := m1/total
   m2_prop := m2/total
   ",
-  data=sem_data
+  data=sem_data,
+  missing="fiml"
 )
 
 # Note summary(simic_sem)$pe

@@ -1,42 +1,10 @@
-#~ Group Inclusion - Otago
-belonging.otago.model <- '
-             belongingOtg =~ belongingotago1 + belongingotago2 + belongingotago3
-            '
-# These are the variables for the halls:  + 
-
-belonging_otago_fit <- sem(belonging.otago.model, cluster="id", data = new_df)
-summary(belonging_otago_fit, fit.measures = TRUE) 
-
-belonging_otago_df <- bind_cols(
-  new_df %>%
-    select(id, time, contains("belongingotago")) %>%
-    na.omit() %>%
-    select(-contains("belongingotago")),
-  predict(belonging_otago_fit)
-  )
-
-
-#~ Group Inclusion - Hall
-belonging.hall.model <- '
-             belongingHall =~ belonginghall1 + belonginghall2 + belonginghall3
-            '
-belonging_hall_fit <- sem(belonging.hall.model, cluster="id", data = new_df)
-summary(belonging_hall_fit, fit.measures = TRUE) 
-
-belonging_hall_df <- bind_cols(
-  new_df %>%
-    select(id, time, contains("belonginghall")) %>%
-    na.omit() %>%
-    select(-contains("belonginghall")),
-  predict(belonging_hall_fit)
-)
-
 
 #~ Warwick–Edinburgh Mental Well-being Scale (WMWS)
 warw_edin.model <- '
             wmws =~ wmws1 + wmws2 + wmws3 + wmws4 + wmws5 + wmws6 + wmws7 + wmws8 + wmws9 + wmws10 + wmws11 + wmws12 + wmws13 + wmws14
                         '
-warw_edin_fit <- sem(warw_edin.model, cluster="id", data = new_df)
+warw_edin_fit <- sem(warw_edin.model, cluster="id", data = new_df,
+                     missing="fiml")
 summary(warw_edin_fit, fit.measures = TRUE)
 
 warw_edin_df <- bind_cols(
@@ -51,7 +19,8 @@ warw_edin_df <- bind_cols(
 exits.model <- '
             exits =~ exits1 + exits2 + exits3 + exits4
                        '
-exits_fit <- sem(exits.model, cluster = "id", data = new_df)
+exits_fit <- sem(exits.model, cluster = "id", data = new_df,
+                 missing="fiml")
 summary(exits_fit, fit.measures = TRUE)
 
 exits_df <- bind_cols(
@@ -66,7 +35,8 @@ exits_df <- bind_cols(
 exits_cont.model <- '
             continuity =~ exits5 + exits6 + exits7
                        '
-exits_cont_fit <- sem(exits_cont.model, cluster = "id", data = new_df)
+exits_cont_fit <- sem(exits_cont.model, cluster = "id", data = new_df,
+                      missing="fiml")
 summary(exits_cont_fit, fit.measures = TRUE)
 
 exits_cont_df <- bind_cols(
@@ -81,7 +51,8 @@ exits_cont_df <- bind_cols(
 exits_gain.model <- '
             gain =~ exits8 + exits9 + exits10
                        '
-exits_gain_fit <- sem(exits_gain.model, cluster = "id", data = new_df)
+exits_gain_fit <- sem(exits_gain.model, cluster = "id", data = new_df,
+                      missing="fiml")
 summary(exits_gain_fit, fit.measures = TRUE)
 
 exits_gain_df <- bind_cols(
@@ -109,8 +80,6 @@ loneliness_df <- bind_cols(
 
 new_df_latent_vars <- new_df %>%
   select(id, gender, time, exits5, exits8, exits10) %>%
-  left_join(belonging_otago_df, by=c("id", "time")) %>%
-  left_join(belonging_hall_df, by=c("id", "time")) %>%
   left_join(warw_edin_df, by=c("id", "time")) %>%
   left_join(exits_df, by=c("id", "time")) %>%
   left_join(exits_cont_df, by=c("id", "time")) %>%
@@ -119,7 +88,7 @@ new_df_latent_vars <- new_df %>%
 
 # calculate cronbach's alpha
 
-library(ltm)
+#library(ltm)
 
 #Warwick Edinburgh Mental Wellbeing Scale
 
