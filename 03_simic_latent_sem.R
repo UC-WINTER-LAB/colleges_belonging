@@ -2,9 +2,6 @@
 # This replaces the factor-score preparation and simic_sem fit in 02_analysis.R.
 # No need to run 01_run_cfa.R for this model.
 
-library(tidyverse)
-library(lavaan)
-
 # Prevent joins from multiplying participants when ID/wave pairs are duplicated.
 if (anyNA(new_df$id) || anyDuplicated(new_df[c("id", "time")])) {
   stop("new_df must have non-missing IDs and only one row per ID/time pair.")
@@ -30,12 +27,6 @@ sem_data <- new_df %>%
       rename_with(~ paste0(.x, "_t3"), all_of(wmws_items)),
     by = "id"
   )
-
-# Gender must already be numeric (e.g., 0/1 for two categories).
-# For more than two categories, create dummy predictors and amend the paths.
-if (!is.numeric(sem_data$gender)) {
-  stop("Recode gender explicitly as a numeric predictor before fitting the model.")
-}
 
 simic_model <- '
   # Measurement model: all five constructs estimated within this SEM
