@@ -22,8 +22,6 @@ stopifnot(all(map_lgl(mcar_data, is.numeric)))
 missing_summary <- mcar_data %>%
   miss_var_summary()
 
-View(missing_summary)
-
 # Little's MCAR test
 mcar_result <- mcar_data %>%
   mcar_test()
@@ -166,3 +164,113 @@ lavTestLRT(
 
 ################################## Correlation matrix ##########################
 
+items_t1 <- paste0("wmws", 1:14, "_t1")
+items_t3 <- paste0("wmws", 1:14, "_t3")
+
+# Equal wellbeing loadings across waves; first loading fixed to 1
+wellbeing_factor <- function(factor_name, items) {
+  paste0(
+    factor_name, " =~ ",
+    paste(
+      c(
+        paste0("1*", items[1]),
+        paste0("l", 2:14, "*", items[-1])
+      ),
+      collapse = " + "
+    )
+  )
+}
+
+# Measurement model only
+cor_model <- paste(
+  "
+  exits =~ exits1 + exits2 + exits3 + exits4
+  continuity =~ exits5 + exits6 + exits7
+  gain =~ exits8 + exits9 + exits10
+  ",
+  
+  wellbeing_factor("wmws_t1", items_t1),
+  wellbeing_factor("wmws_t3", items_t3),
+  
+  # Equal wellbeing intercepts across waves
+  paste(paste0(items_t1, " ~ i", 1:14, "*1"), collapse = "\n"),
+  paste(paste0(items_t3, " ~ i", 1:14, "*1"), collapse = "\n"),
+  
+  # Allow the wellbeing mean to differ across waves
+  "wmws_t1 ~ 0*1",
+  "wmws_t3 ~ mean_t3*1",
+  
+  # Correlated residuals for matching items
+  paste(paste0(items_t1, " ~~ ", items_t3), collapse = "\n"),
+  
+  sep = "\n"
+)
+
+# CFA freely estimates all correlations between the five factors
+cor_fit <- cfa(
+  model = cor_model,
+  data = sem_data,
+  estimator = "MLR",
+  missing = "fiml",
+  meanstructure = TRUE
+)
+
+# Check convergence and model fit
+lavInspect(cor_fit, "converged")
+summary(cor_fit, fit.measures = TRUE, standardized = TRUE)
+
+# Extract latent correlations in the required order
+factor_order <- c(
+  "exits", "wmws_t1", "continuity", "gain", "wmws_t3"
+)
+
+latent_cor <- lavInspect(cor_fit, "cor.lv")[
+  factor_order, factor_order
+]
+
+# Format the lower triangle
+cor_display <- matrix(
+  sprintf("%.2f", latent_cor),
+  nrow = 5,
+  ncol = 5
+)
+
+colnames(cor_display) <- paste0("(", 1:5, ")")
+
+cor_table <- bind_cols(
+  tibble(
+    Variable = c(
+      "Pre-university identity T1 (1)",
+      "Wellbeing T1 (2)",
+      "Identity continuity T2 (3)",
+      "Identity gain T2 (4)",
+      "Wellbeing T3 (5)"
+    )
+  ),
+  as_tibble(cor_display[, 1:4, drop = FALSE])
+)
+
+print(cor_table, width = Inf)
+
+latent_cor_tests <- standardizedSolution(
+  cor_fit,
+  type = "std.all"
+) %>%
+  filter(
+    op == "~~",
+    lhs %in% factor_order,
+    rhs %in% factor_order,
+    lhs != rhs
+  ) %>%
+  transmute(
+    Variable_1 = lhs,
+    Variable_2 = rhs,
+    r = est.std,
+    SE = se,
+    z = z,
+    p = pvalue,
+    CI_lower = ci.lower,
+    CI_upper = ci.upper
+  )
+
+lavInspect(cor_fit, "nobs")
